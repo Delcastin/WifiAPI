@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>근처 와이파이 정보</title>
+    <style>
+        #customers {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #customers td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #customers tr:nth-child(even){background-color: #f2f2f2;}
+
+        #customers tr:hover {background-color: #ddd;}
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>근처 와이파이 정보</h1>
+<a th:href="@{/}">홈</a> |
+<a th:href="@{/wifi/history}">위치 히스토리 목록</a> |
+<a th:href="@{/wifi/import}">Open API 와이파이 정보 가져오기</a>
+
+<table id="customers">
+    <thead>
+    <tr>
+        <th>거리(Km)</th>
+        <th>관리번호</th>
+        <th>자치구</th>
+        <th>와이파이명</th>
+        <th>도로명주소</th>
+        <th>상세주소</th>
+        <th>설치위치(층)</th>
+        <th>설치유형</th>
+        <th>설치기관</th>
+        <th>서비스구분</th>
+        <th>망종류</th>
+        <th>설치년도</th>
+        <th>실내외구분</th>
+        <th>WIFI접속환경</th>
+        <th>X좌표</th>
+        <th>Y좌표</th>
+        <th>작업일자</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 데이터 없을 때 메시지 -->
+    <tr th:if="${#lists.isEmpty(wifiList)}">
+        <td th:colspan="17" style="text-align:center; height:120px;">
+            위치 정보를 입력한 후에 조회해 주세요.
+        </td>
+    </tr>
+    <!-- 데이터 있을 때 반복 출력 -->
+    <tr th:each="w : ${wifiList}">
+        <td th:text="${w.distance}">0.0</td>
+        <td th:text="${w.MgrNo}">관리번호</td>
+        <td th:text="${w.Wrdofc}">자치구</td>
+        <td th:text="${w.WifiName}">와이파이명</td>
+        <td th:text="${w.AddressRoad}">도로명주소</td>
+        <td th:text="${w.AddressDetail}">상세주소</td>
+        <td th:text="${w.Floor}">설치위치(층)</td>
+        <td th:text="${w.Type}">설치유형</td>
+        <td th:text="${w.InstallBy}">설치기관</td>
+        <td th:text="${w.ServiceType}">서비스구분</td>
+        <td th:text="${w.NetType}">망종류</td>
+        <td th:text="${w.InstallYear}">설치년도</td>
+        <td th:text="${w.InOut}">실내외구분</td>
+        <td th:text="${w.InstallEnv}">WIFI접속환경</td>
+        <td th:text="${w.Lat}">X좌표</td>
+        <td th:text="${w.Lnt}">Y좌표</td>
+        <td th:text="${w.Worked_at}">작업일자</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

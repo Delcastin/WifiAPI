@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
@@ -34,8 +34,18 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // JAXB API (Jakarta)
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
+
+    // JAXB Runtime (GlassFish JAXB 구현체)
+    implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.1'
+
+    // Spring Object/XML Mapping (Jaxb2Marshaller가 포함됨)
+    implementation 'org.springframework:spring-oxm'
+
 }
 
 tasks.named('test') {
