@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #details {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #details td, #details th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #details tr:nth-child(even) {background-color: #f2f2f2;}
+        #details tr:hover {background-color: #ddd;}
+
+        /* 첫 번째 열만 초록색 배경과 흰 글자 적용 */
+        #details td:first-child,
+        #details th:first-child {
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+
+</head>
+<body>
+
+<h1>와이파이 정보 구하기</h1>
+<a th:href="@{/}">홈</a>
+|
+<a th:href="@{/wifi/history}">위치 히스토리 목록</a>
+|
+<a th:href="@{/wifi/import}">Open API 와이파이 정보 가져오기</a>
+|
+<a th:href="@{/}">북마크 보기</a>
+|
+<a th:href="@{/}">북마크 그룹 관리</a>
+
+<table id="details">
+    <tr>
+        <th>거리(Km)</th>
+        <td th:text="${wifi.distance}"></td>
+    </tr>
+    <tr>
+        <th>관리번호</th>
+        <td th:text="${wifi.mgrNo}"></td>
+    </tr>
+    <tr>
+        <th>자치구</th>
+        <td th:text="${wifi.wrdofc}"></td>
+    </tr>
+    <tr>
+        <th>와이파이명</th>
+        <td th:text="${wifi.wifiName}"></td>
+    </tr>
+    <tr>
+        <th>도로명주소</th>
+        <td th:text="${wifi.addressRoad}"></td>
+    </tr>
+    <tr>
+        <th>상세주소</th>
+        <td th:text="${wifi.addressDetail}"></td>
+    </tr>
+    <tr>
+        <th>설치위치(층)</th>
+        <td th:text="${wifi.floor}"></td>
+    </tr>
+    <tr>
+        <th>설치유형</th>
+        <td th:text="${wifi.type}"></td>
+    </tr>
+    <tr>
+        <th>설치기관</th>
+        <td th:text="${wifi.installBy}"></td>
+    </tr>
+    <tr>
+        <th>서비스구분</th>
+        <td th:text="${wifi.serviceType}"></td>
+    </tr>
+    <tr>
+        <th>망종류</th>
+        <td th:text="${wifi.netType}"></td>
+    </tr>
+    <tr>
+        <th>설치년도</th>
+        <td th:text="${wifi.installYear}"></td>
+    </tr>
+    <tr>
+        <th>실내외구분</th>
+        <td th:text="${wifi.inOut}"></td>
+    </tr>
+    <tr>
+        <th>WIFI접속환경</th>
+        <td th:text="${wifi.installEnv}"></td>
+    </tr>
+    <tr>
+        <th>X좌표</th>
+        <td th:text="${wifi.lat}"></td>
+    </tr>
+    <tr>
+        <th>Y좌표</th>
+        <td th:text="${wifi.lnt}"></td>
+    </tr>
+    <tr>
+        <th>작업일자</th>
+        <td th:text="${wifi.worked_at}"></td>
+    </tr>
+
+
+
+</table>
+
+</body>
+</html>

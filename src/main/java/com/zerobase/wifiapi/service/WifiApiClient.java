@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import static com.zerobase.wifiapi.entity.WifiMapper.toEntity;
+
 @Service
 public class WifiApiClient {
 
@@ -24,20 +26,22 @@ public class WifiApiClient {
         this.wifiRepository = wifiRepository;
     }
 
-    public List<WifiApiResponse.WifiRecord> fetchWifiRecords() {
-        String url = "http://openapi.seoul.go.kr:8088/496b6650726c656a34347871717242/json/TbPublicWifiInfo/1/5/";
+    public List<WifiApiResponse.WifiRecord> fetchWifiRecords(int start, int end) {
+        String url = String.format(
+                "http://openapi.seoul.go.kr:8088/496b6650726c656a34347871717242/json/TbPublicWifiInfo/%d/%d/",
+                start, end
+        );
 
         try {
-            // RestTemplate을 사용하여 XML 응답을 처리
             ResponseEntity<WifiApiResponse> response = restTemplate.getForEntity(url, WifiApiResponse.class);
             return Objects.requireNonNull(response.getBody()).getRow();
         } catch (Exception e) {
-            throw new RuntimeException("공공 와이파이 API 호출을 실패했습니다.", e);
+            throw new RuntimeException("공공 와이파이 API 호출 실패 (start=" + start + ", end=" + end + ")", e);
         }
     }
 
-    public List<WifiApiResponse.WifiRecord> fetchNearByWifi(double lat, double lnt){
-        try{
+    public List<WifiApiResponse.WifiRecord> fetchNearByWifi(double lat, double lnt) {
+        try {
             String url = "http://openapi.seoul.go.kr:8088/496b6650726c656a34347871717242/json/TbPublicWifiInfo/1/1000/";
             WifiApiResponse response = restTemplate.getForObject(url, WifiApiResponse.class);
 
@@ -63,20 +67,32 @@ public class WifiApiClient {
     }
 
     public int importWifiDataFromOpenApi() {
-        List<WifiApiResponse.WifiRecord> wifiRecords = fetchWifiRecords();
+        int totalCount = 0;
+        int batchSize = 1000;
+        int start = 1;
 
-        int count = 0;
-        for(WifiApiResponse.WifiRecord record : wifiRecords){
-            boolean saved = saveWifiRecord(record);
-            if(saved){
-                count++;
+        while (true) {
+            int end = start + batchSize - 1;
+            List<WifiApiResponse.WifiRecord> wifiRecords = fetchWifiRecords(start, end);
+
+            if (wifiRecords == null || wifiRecords.isEmpty()) {
+                break;
             }
+
+            for (WifiApiResponse.WifiRecord record : wifiRecords) {
+                if (saveWifiRecord(record)) {
+                    totalCount++;
+                }
+            }
+
+            start += batchSize;
         }
-        return count;
+
+        return totalCount;
     }
 
     private boolean saveWifiRecord(WifiApiResponse.WifiRecord record) {
-        try{
+        try {
             Wifi wifi = toEntity(record);
             wifiRepository.save(wifi);
             return true;
@@ -84,28 +100,15 @@ public class WifiApiClient {
             e.printStackTrace();
             return false;
         }
+
     }
 
-    private Wifi toEntity(WifiApiResponse.WifiRecord record) {
-
-        Wifi wifi = new Wifi();
-        wifi.setMgrNo(record.getMgrNo());
-        wifi.setWrdofc(record.getWrdofc());
-        wifi.setWifiName(record.getWifiName());
-        wifi.setAddressRoad(record.getAddressRoad());
-        wifi.setAddressDetail(record.getAddressDetail());
-        wifi.setType(record.getType());
-        wifi.setInstallBy(record.getInstallBy());
-        wifi.setServiceType(record.getServiceType());
-        wifi.setNetType(record.getNetType());
-        wifi.setInstallYear(record.getInstallYear());
-        wifi.setInOut(record.getInOut());
-        wifi.setInstallEnv(record.getInstallEnv());
-        wifi.setLat(record.getLatAsDouble());
-        wifi.setLnt(record.getLntAsDouble());
-        wifi.setWorked_at(record.getWorked_at());
-
-        return wifi;
+    private Wifi intoEntity(WifiApiResponse.WifiRecord record) {
+        try {
+            return toEntity(record);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("잘못된 위도/경도 형식: " + record.getLat() + ", " + record.getLnt());
+        }
     }
 }
 

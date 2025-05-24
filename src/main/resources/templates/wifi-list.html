@@ -66,22 +66,24 @@
     <!-- 데이터 있을 때 반복 출력 -->
     <tr th:each="w : ${wifiList}">
         <td th:text="${w.distance}">0.0</td>
-        <td th:text="${w.MgrNo}">관리번호</td>
-        <td th:text="${w.Wrdofc}">자치구</td>
-        <td th:text="${w.WifiName}">와이파이명</td>
-        <td th:text="${w.AddressRoad}">도로명주소</td>
-        <td th:text="${w.AddressDetail}">상세주소</td>
-        <td th:text="${w.Floor}">설치위치(층)</td>
-        <td th:text="${w.Type}">설치유형</td>
-        <td th:text="${w.InstallBy}">설치기관</td>
-        <td th:text="${w.ServiceType}">서비스구분</td>
-        <td th:text="${w.NetType}">망종류</td>
-        <td th:text="${w.InstallYear}">설치년도</td>
-        <td th:text="${w.InOut}">실내외구분</td>
-        <td th:text="${w.InstallEnv}">WIFI접속환경</td>
-        <td th:text="${w.Lat}">X좌표</td>
-        <td th:text="${w.Lnt}">Y좌표</td>
-        <td th:text="${w.Worked_at}">작업일자</td>
+        <td th:text="${w.mgrNo}">관리번호</td>
+        <td th:text="${w.wrdofc}">자치구</td>
+        <td>
+            <a th:href="@{|/wifi/detail/${w.mgrNo}|}" th:text="${w.wifiName}">와이파이명</a>
+        </td>
+        <td th:text="${w.addressRoad}">도로명주소</td>
+        <td th:text="${w.addressDetail}">상세주소</td>
+        <td th:text="${w.floor}">설치위치(층)</td>
+        <td th:text="${w.type}">설치유형</td>
+        <td th:text="${w.installBy}">설치기관</td>
+        <td th:text="${w.serviceType}">서비스구분</td>
+        <td th:text="${w.netType}">망종류</td>
+        <td th:text="${w.installYear}">설치년도</td>
+        <td th:text="${w.inOut}">실내외구분</td>
+        <td th:text="${w.installEnv}">WIFI접속환경</td>
+        <td th:text="${w.lat}">X좌표</td>
+        <td th:text="${w.lnt}">Y좌표</td>
+        <td th:text="${w.worked_at}">작업일자</td>
     </tr>
     </tbody>
 </table>

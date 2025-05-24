@@ -2,21 +2,27 @@ package com.zerobase.wifiapi.service;
 
 import com.zerobase.wifiapi.dto.WifiApiResponse;
 import com.zerobase.wifiapi.entity.Wifi;
+import com.zerobase.wifiapi.repository.WifiRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.zerobase.wifiapi.entity.WifiMapper.toEntity;
 
 @Service
 @RequiredArgsConstructor
 public class WifiServiceImpl implements WifiService{
 
     private final RestTemplate restTemplate;
+    private final WifiRepository wifiRepository;
+    private final WifiApiClient wifiApiClient;
 
     private static final String API_URL = "http://openapi.seoul.go.kr:8088/496b6650726c656a34347871717242/json/TbPublicWifiInfo/1/1000/";
-
 
     @Override
     public List<Wifi> getNearbyWifi(double lat, double lnt) {
@@ -42,24 +48,7 @@ public class WifiServiceImpl implements WifiService{
 
     private Wifi convertToWifi(WifiApiResponse.WifiRecord record) {
 
-        return Wifi.builder()
-                .mgrNo(record.getMgrNo())
-                .wrdofc(record.getWrdofc())
-                .wifiName(record.getWifiName())
-                .addressRoad(record.getAddressRoad())
-                .addressDetail(record.getAddressDetail())
-                .floor(record.getFloor())
-                .type(record.getType())
-                .installBy(record.getInstallBy())
-                .serviceType(record.getServiceType())
-                .netType(record.getNetType())
-                .installYear(record.getInstallYear())
-                .inOut(record.getInOut())
-                .installEnv(record.getInstallEnv())
-                .worked_at(record.getWorked_at())
-                .lat(Double.parseDouble(record.getLat()))
-                .lnt(Double.parseDouble(record.getLnt()))
-                .build();
+        return toEntity(record);
     }
 
     @Override
@@ -71,4 +60,65 @@ public class WifiServiceImpl implements WifiService{
     public List<Wifi> getAllWifi() {
         return List.of();
     }
+
+    @Override
+    public int importWifiDataFromOpenApi(){
+        int saved = 0;
+        int batchSize = 1000;
+        int start = 1;
+
+        while (true) {
+            int end = start + batchSize - 1;
+            List<WifiApiResponse.WifiRecord> records = wifiApiClient.fetchWifiRecords(start, end);
+
+            if (records == null || records.isEmpty()) {
+                break; // 더 이상 가져올 데이터 없음
+            }
+
+            for (WifiApiResponse.WifiRecord record : records) {
+                if (saveWifiRecord(record)) {
+                    saved++;
+                }
+            }
+
+            start += batchSize;
+        }
+
+        return saved;
+    }
+
+    @Override
+    public Wifi findByMgrNo(String mgrNo) {
+        return wifiRepository.findByMgrNo(mgrNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "해당 와이파이를 찾을 수 없습니다 : " + mgrNo));
+    }
+
+    private boolean saveWifiRecord(WifiApiResponse.WifiRecord record) {
+        try{
+            Wifi wifi = new Wifi();
+            wifi.setMgrNo(record.getMgrNo());
+            wifi.setWrdofc(record.getWrdofc());
+            wifi.setWifiName(record.getWifiName());
+            wifi.setAddressRoad(record.getAddressRoad());
+            wifi.setAddressDetail(record.getAddressDetail());
+            wifi.setType(record.getType());
+            wifi.setInstallBy(record.getInstallBy());
+            wifi.setServiceType(record.getServiceType());
+            wifi.setNetType(record.getNetType());
+            wifi.setInstallYear(record.getInstallYear());
+            wifi.setInOut(record.getInOut());
+            wifi.setInstallEnv(record.getInstallEnv());
+            wifi.setLat(record.getLatAsDouble());
+            wifi.setLnt(record.getLntAsDouble());
+            wifi.setWorked_at(record.getWorked_at());
+
+            wifiRepository.save(wifi);
+        } catch(Exception e){
+            return false;
+        }
+        return true;
+    }
+
+
 }

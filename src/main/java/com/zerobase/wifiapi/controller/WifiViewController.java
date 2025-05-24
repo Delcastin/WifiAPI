@@ -1,16 +1,19 @@
 package com.zerobase.wifiapi.controller;
 
 import com.zerobase.wifiapi.dto.WifiApiResponse;
+import com.zerobase.wifiapi.entity.Wifi;
 import com.zerobase.wifiapi.service.GetUtils;
+import com.zerobase.wifiapi.service.SearchHistoryService;
 import com.zerobase.wifiapi.service.WifiApiClient;
+import com.zerobase.wifiapi.service.WifiService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,6 +26,9 @@ import java.util.List;
 public class WifiViewController {
 
     private final WifiApiClient wifiApiClient;
+
+    private final SearchHistoryService searchHistoryService;
+    private final WifiService wifiService;
 
     @GetMapping("/wifi/nearby")
     public String showNearbyWifi(@RequestParam(name = "lat", required = false) Double lat,
@@ -54,7 +60,10 @@ public class WifiViewController {
         return "import";
     }
 
-
-
-
+    @GetMapping("/wifi/detail/{mgrNo}")
+    public String showWifiDetail(@PathVariable("mgrNo") String mgrNo, Model model) {
+        Wifi wifi = wifiService.findByMgrNo(mgrNo);
+        model.addAttribute("wifi", wifi);
+        return "wifi-detail";
+    }
 }

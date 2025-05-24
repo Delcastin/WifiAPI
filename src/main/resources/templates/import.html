@@ -3,6 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>와이파이 정보 저장하기</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;  /* 수직 정렬 */
+            align-items: center;      /* 수평 정렬 */
+            height: 100vh;            /* 전체 화면 높이 사용 */
+            margin: 0;
+        }
+
+        h1, a {
+            margin: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background-color: #388E3C;
+        }
+    </style>
 </head>
 <body>
     <h1 th:text="${count} + '개의 WIFI 정보를 성공적으로 저장하였습니다.'"></h1>

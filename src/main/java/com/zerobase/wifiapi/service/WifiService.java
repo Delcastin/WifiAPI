@@ -19,4 +19,9 @@ public interface WifiService {
 
     // 저장된 데이터를 조회
     List<Wifi> getAllWifi();
+
+    int importWifiDataFromOpenApi();
+
+    // 와이파이명 상세조회
+    Wifi findByMgrNo(String mgrNo);
 }

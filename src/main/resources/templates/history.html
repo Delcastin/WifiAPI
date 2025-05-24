@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>검색 히스토리</title>
+    <style>
+        #histories {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #histories td, #histories th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #histories tr:nth-child(even){background-color: #f2f2f2;}
+
+        #histories tr:hover {background-color: #ddd;}
+
+        #histories th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>검색 히스토리</h1>
+<table id="histories">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>X좌표</th>
+        <th>Y좌표</th>
+        <th>조회일자</th>
+        <th>비고</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(histories)}">
+        <td th:colspan="17" style="text-align:center; height:120px;">
+            위치 정보를 입력한 후에 조회해 주세요.
+        </td>
+    </tr>
+    <tr th:each="history : ${histories}">
+        <td th:text="${history.id}"></td>
+        <td th:text="${history.lat}"></td>
+        <td th:text="${history.lnt}"></td>
+        <td th:text="${#temporals.format(history.searchedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td>
+            <form th:action="@{/history/delete/{id}(id=${history.id})}" method="post" style="display: inline;">
+                <button type="submit">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/}">홈으로</a>
+</body>
+</html>
