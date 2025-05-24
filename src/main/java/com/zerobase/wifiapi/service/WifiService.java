@@ -19,4 +19,6 @@ public interface WifiService {
 
     // 저장된 데이터를 조회
     List<Wifi> getAllWifi();
+
+    int importWifiDataFromOpenApi();
 }
