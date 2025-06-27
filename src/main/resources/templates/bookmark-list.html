@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>북마크 목록</title>
+    <style>
+        #bookmarkList {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #bookmarkList td, #bookmarkList th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #bookmarkList tr:nth-child(even){background-color: #f2f2f2;}
+
+        #bookmarkList tr:hover {background-color: #ddd;}
+
+        #bookmarkList th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>북마크 목록</h1>
+<a th:href="@{/}">홈</a>
+|
+<a th:href="@{/search/history}">위치 히스토리 목록</a>
+|
+<a th:href="@{/wifi/import}">Open API 와이파이 정보 가져오기</a>
+|
+<a th:href="@{/bookmark/list}">북마크 보기</a>
+|
+<a th:href="@{/bookmark-group}">북마크 그룹 관리</a>
+
+<table id="bookmarkList">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>북마크 이름</th>
+        <th>순서</th>
+        <th>등록일자</th>
+        <th>수정일자</th>
+        <th>비고</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(bookmarks)}">
+        <td th:colspan="6" style="text-align:center; height:120px;">
+            위치 정보를 입력한 후에 조회해 주세요.
+        </td>
+    </tr>
+    <tr th:each="bookmark : ${bookmarks}">
+        <td th:text="${bookmark.id}">ID</td>
+        <td th:text="${bookmark.bookmarkName}">북마크 이름</td>
+        <td th:text="${bookmark.wifi.wifiName}">와이파이 이름</td>
+        <td th:text="${bookmark.createdAt}">등록일자</td>
+        <td th:text="${bookmark.updatedAt}">수정일자</td>
+        <td>
+            <form th:action="@{/bookmark/delete/{id}(id=${bookmark.id})}" method="get">
+                <input type="submit" value="삭제">
+            </form>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+<a th:href="@{/}">홈으로</a>
+</body>
+</html>

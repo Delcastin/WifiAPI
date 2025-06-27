@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>북마크 그룹 수정</title>
+    <style>
+        #updateList {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #updateList td, #updateList th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #updateList tr:nth-child(even){background-color: #f2f2f2;}
+
+        #updateList tr:hover {background-color: #ddd;}
+
+        #updateList th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>북마크 그룹 수정</h1>
+<a th:href="@{/}">홈</a>
+|
+<a th:href="@{/search/history}">위치 히스토리 목록</a>
+|
+<a th:href="@{/wifi/import}">Open API 와이파이 정보 가져오기</a>
+|
+<a th:href="@{/bookmark/list}">북마크 보기</a>
+|
+<a th:href="@{/bookmark-group}">북마크 그룹 관리</a>
+
+<form th:action="@{'/bookmark-group/' + ${group.id} + '/edit'}"
+      th:object="${group}" method="post">
+
+    <table id="updateList">
+        <tr>
+            <th>북마크 그룹 이름</th>
+            <td>
+                <input type="text" th:field="*{groupName}" required/>
+            </td>
+        </tr>
+        <tr>
+            <th>순서</th>
+            <td>
+                <input type="number" th:field="*{sortOrder}" min="1" required/>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <button type="submit" style="padding: 8px 16px; background-color: #04AA6D; color: white; border: none; border-radius: 4px;">
+                    수정 완료
+                </button>
+                <a th:href="@{/bookmark-group}" style="margin-left: 12px; padding: 8px 16px; background-color: #999; color: white; text-decoration: none; border-radius: 4px;">
+                    돌아가기
+                </a>
+            </td>
+        </tr>
+
+    </table>
+
+</form>
+
+<a th:href="@{/}">홈으로</a>
+</body>
+
+</html>

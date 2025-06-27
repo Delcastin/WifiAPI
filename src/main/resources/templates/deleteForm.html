@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>북마크 그룹 추가</title>
+    <style>
+        #updateList {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #updateList td, #updateList th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #updateList tr:nth-child(even){background-color: #f2f2f2;}
+
+        #updateList tr:hover {background-color: #ddd;}
+
+        #updateList th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<h1>북마크 삭제</h1>
+<a th:href="@{/}">홈</a>
+|
+<a th:href="@{/search/history}">위치 히스토리 목록</a>
+|
+<a th:href="@{/wifi/import}">Open API 와이파이 정보 가져오기</a>
+|
+<a th:href="@{/bookmark/list}">북마크 보기</a>
+|
+<a th:href="@{/bookmark-group}">북마크 그룹 관리</a>
+
+<h2>정말로 이 북마크를 삭제하시겠습니까?</h2>
+
+<table id="updateList">
+    <tr>
+        <th>북마크 이름</th>
+        <td th:text="${bookmark.bookmarkGroup.groupName}"></td>
+    </tr>
+    <tr>
+        <th>와이파이명</th>
+        <td th:text="${bookmark.wifi.wifiName}"></td>
+    </tr>
+    <tr>
+        <th>등록일자</th>
+        <td th:text="${bookmark.createdAt}"></td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align: center;">
+
+            <a th:href="@{/bookmark/list}">
+                <button type="button">돌아가기</button>
+            </a>
+
+            <form th:action="@{/bookmark/delete/{id}(id=${bookmark.id})}" method="post" style="display: inline;">
+                <button type="submit">삭제</button>
+            </form>
+
+        </td>
+    </tr>
+</table>
+
+
+<a th:href="@{/}">홈으로</a>
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>북마크 그룹</title>
+    <style>
+        #groupNameList {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #groupNameList td, #groupNameList th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #groupNameList tr:nth-child(even){background-color: #f2f2f2;}
+
+        #groupNameList tr:hover {background-color: #ddd;}
+
+        #groupNameList th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<h1>북마크 그룹</h1>
+<a th:href="@{/}">홈</a>
+|
+<a th:href="@{/search/history}">위치 히스토리 목록</a>
+|
+<a th:href="@{/wifi/import}">Open API 와이파이 정보 가져오기</a>
+|
+<a th:href="@{/bookmark/list}">북마크 보기</a>
+|
+<a th:href="@{/bookmark-group}">북마크 그룹 관리</a>
+<br>
+<!-- 버튼 추가 위치 -->
+<a th:href="@{/bookmark-group/edit}"
+   style="display: inline-block;
+   margin: 10px 0;
+   padding: 8px 12px;
+   background-color: #04AA6D;
+   color: white;
+   text-decoration: none;
+   border-radius: 4px;">
+    북마크 그룹 추가
+</a>
+
+<table id="groupNameList">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>북마크 이름</th>
+        <th>순서</th>
+        <th>등록일자</th>
+        <th>수정일자</th>
+        <th>비고</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(groups)}">
+        <td th:colspan="6" style="text-align:center; height:120px;">
+            위치 정보를 입력한 후에 조회해 주세요.
+        </td>
+    </tr>
+    <tr th:each="groupName, stat : ${groups}">
+        
+        <td th:text="${groupName.id}">ID</td>
+        <td th:text="${groupName.groupName}">북마크 이름</td>
+        <td th:text="${stat.index + 1}">순서</td> <!-- 1번부터 순서 출력 -->
+        <td th:text="${groupName.createdAt}">등록일자</td>
+        <td th:text="${groupName.updatedAt}">수정일자</td>
+        <td>
+            <a th:href="@{'/bookmark-group/' + ${groupName.id} + '/update'}"
+               style="margin-right: 10px; color: #007bff; text-decoration: none;">
+                수정
+            </a>
+            <form th:action="@{'/bookmark-group/' + ${groupName.id} + '/delete'}" method="post"
+                  onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <button type="submit"
+                        style="padding: 4px 8px; background-color: #f44336; color: white; border: none; border-radius: 4px;">
+                    삭제
+                </button>
+            </form>
+        </td>
+
+
+
+
+    </tr>
+    </tbody>
+</table>
+
+<a th:href="@{/}">홈으로</a>
+</body>
+</html>
