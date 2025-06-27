@@ -1,10 +1,10 @@
 package com.zerobase.wifiapi.controller;
 
 
+
 import com.zerobase.wifiapi.entity.SearchHistory;
+import com.zerobase.wifiapi.repository.SearchHistoryRepository;
 import com.zerobase.wifiapi.service.SearchHistoryService;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,29 +14,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+
 @Controller
-@Getter
-@Setter
-@RequestMapping("/wifi")
+@RequestMapping("/search")
 public class HistoryController {
 
     private final SearchHistoryService searchHistoryService;
+    private final SearchHistoryRepository searchHistoryRepository;
 
-    public HistoryController(SearchHistoryService searchHistoryService) {
+    public HistoryController(SearchHistoryService searchHistoryService, SearchHistoryRepository searchHistoryRepository) {
         this.searchHistoryService = searchHistoryService;
+        this.searchHistoryRepository = searchHistoryRepository;
     }
 
     @GetMapping("/history")
-    public String showHistoryList(Model model) {
-        List<SearchHistory> histories = searchHistoryService.getAllHistory();
-        model.addAttribute("histories", histories);
+    public String showHistory(Model model) {
+        List<SearchHistory> recentHistory = searchHistoryService.getRecentSearchHistories();
+        model.addAttribute("recentHistory", recentHistory);
         return "history";
     }
 
-    @PostMapping("/delete/{id}")
-    public String deleteHistory(@PathVariable Long id) {
-        searchHistoryService.deleteById(id);
+    @PostMapping("/history/delete/{id}")
+    public String deleteHistory(@PathVariable("id") Long id) {
+        searchHistoryRepository.deleteById(id);
 
-        return "redirect:/history";
+        return "redirect:/search/history";
     }
+
+
 }

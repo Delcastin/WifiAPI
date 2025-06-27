@@ -1,7 +1,9 @@
 package com.zerobase.wifiapi.controller;
 
 import com.zerobase.wifiapi.dto.WifiApiResponse;
+import com.zerobase.wifiapi.entity.SearchHistory;
 import com.zerobase.wifiapi.entity.Wifi;
+import com.zerobase.wifiapi.repository.BookmarkGroupRepository;
 import com.zerobase.wifiapi.service.GetUtils;
 import com.zerobase.wifiapi.service.SearchHistoryService;
 import com.zerobase.wifiapi.service.WifiApiClient;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.List;
 public class WifiViewController {
 
     private final WifiApiClient wifiApiClient;
+    private final BookmarkGroupRepository bookmarkGroupRepository;
 
     private final SearchHistoryService searchHistoryService;
     private final WifiService wifiService;
@@ -34,6 +38,13 @@ public class WifiViewController {
     public String showNearbyWifi(@RequestParam(name = "lat", required = false) Double lat,
                                  @RequestParam(name = "lnt", required = false) Double lnt,
                                  Model model) {
+
+        SearchHistory history = new SearchHistory();
+        history.setLat(lat);
+        history.setLnt(lnt);
+        history.setSearchDate(LocalDateTime.now());
+
+        searchHistoryService.saveSearchHistory(history);
 
         List<WifiApiResponse.WifiRecord> wifiList = new ArrayList<>();
 
@@ -61,9 +72,20 @@ public class WifiViewController {
     }
 
     @GetMapping("/wifi/detail/{mgrNo}")
-    public String showWifiDetail(@PathVariable("mgrNo") String mgrNo, Model model) {
-        Wifi wifi = wifiService.findByMgrNo(mgrNo);
+    public String showWifiDetail(@PathVariable("mgrNo") String mgrNo, Model model,
+                                 @RequestParam(name = "lat", required = false) Double lat,
+                                 @RequestParam(name = "lnt", required = false) Double lnt) {
+        if (lat != null && lat.isNaN() || lnt != null && lnt.isNaN()) {
+            throw new RuntimeException("lat/lnt is NaN");
+        }
+
+        Wifi wifi = wifiService.findByMgrNo(mgrNo, lat, lnt);
+
         model.addAttribute("wifi", wifi);
+        model.addAttribute("lat", lat);
+        model.addAttribute("lnt", lnt);
+        model.addAttribute("groups", bookmarkGroupRepository.findAll());
+
         return "wifi-detail";
     }
 }

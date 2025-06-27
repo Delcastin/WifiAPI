@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>와이파이 정보 구하기</title>
     <style>
         #details {
             font-family: Arial, Helvetica, sans-serif;
@@ -30,13 +32,34 @@
 <h1>와이파이 정보 구하기</h1>
 <a th:href="@{/}">홈</a>
 |
-<a th:href="@{/wifi/history}">위치 히스토리 목록</a>
+<a th:href="@{/search/history}">위치 히스토리 목록</a>
 |
 <a th:href="@{/wifi/import}">Open API 와이파이 정보 가져오기</a>
 |
-<a th:href="@{/}">북마크 보기</a>
+<a th:href="@{/bookmark/list}">북마크 보기</a>
 |
-<a th:href="@{/}">북마크 그룹 관리</a>
+<a th:href="@{/bookmark-group}">북마크 그룹 관리</a>
+
+<form th:action="@{/bookmark/add}" method="post">
+    <label for="bookmarkGroupId"></label>
+    <select id="bookmarkGroupId" name="bookmarkGroupId" required>
+        <option value="" disabled selected>북마크 그룹 이름</option>
+        <option th:each="group : ${groups}"
+                th:value="${group.id}"
+                th:text="${group.groupName}">
+        </option>
+    </select>
+
+
+
+    <!-- 와이파이 정보 넘기기 -->
+    <input type="hidden" name="wifiMgrNo" th:value="${wifi.mgrNo}" />
+    <input type="hidden" name="wifiName" th:value="${wifi.wifiName}" />
+
+    <button type="submit">북마크 추가하기</button>
+</form>
+
+
 
 <table id="details">
     <tr>
@@ -53,7 +76,10 @@
     </tr>
     <tr>
         <th>와이파이명</th>
-        <td th:text="${wifi.wifiName}"></td>
+        <td>
+            <a th:href="@{/wifi/detail/{mgrNo}(mgrNo=${wifi.mgrNo}, lat=${wifi.lat}, lnt=${wifi.lnt})}"
+               th:text="${wifi.wifiName}">와이파이명</a>
+        </td>
     </tr>
     <tr>
         <th>도로명주소</th>

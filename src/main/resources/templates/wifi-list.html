@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>근처 와이파이 정보</title>
@@ -30,9 +30,15 @@
 </head>
 <body>
 <h1>근처 와이파이 정보</h1>
-<a th:href="@{/}">홈</a> |
-<a th:href="@{/wifi/history}">위치 히스토리 목록</a> |
+<a th:href="@{/}">홈</a>
+|
+<a th:href="@{/search/history}">위치 히스토리 목록</a>
+|
 <a th:href="@{/wifi/import}">Open API 와이파이 정보 가져오기</a>
+|
+<a th:href="@{/bookmark/list}">북마크 보기</a>
+|
+<a th:href="@{/bookmark-group}">북마크 그룹 관리</a>
 
 <table id="customers">
     <thead>
@@ -69,7 +75,8 @@
         <td th:text="${w.mgrNo}">관리번호</td>
         <td th:text="${w.wrdofc}">자치구</td>
         <td>
-            <a th:href="@{|/wifi/detail/${w.mgrNo}|}" th:text="${w.wifiName}">와이파이명</a>
+            <a th:href="@{/wifi/detail/{mgrNo}(mgrNo=${w.mgrNo}, lat=${w.lat}, lnt=${w.lnt})}"
+               th:text="${w.wifiName}">와이파이명</a>
         </td>
         <td th:text="${w.addressRoad}">도로명주소</td>
         <td th:text="${w.addressDetail}">상세주소</td>

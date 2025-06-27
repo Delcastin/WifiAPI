@@ -3,6 +3,7 @@ package com.zerobase.wifiapi.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class SearchHistory {
     private double lat;
     private double lnt;
 
+    @CreationTimestamp
     private LocalDateTime searchDate;
 
 

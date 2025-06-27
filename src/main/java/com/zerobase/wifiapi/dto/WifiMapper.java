@@ -1,9 +1,8 @@
-package com.zerobase.wifiapi.entity;
+package com.zerobase.wifiapi.dto;
 
-import com.zerobase.wifiapi.dto.WifiApiResponse;
+import com.zerobase.wifiapi.entity.Wifi;
 
-public class
-WifiMapper {
+public class WifiMapper {
 
     public static Wifi toEntity(WifiApiResponse.WifiRecord record){
 

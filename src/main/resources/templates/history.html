@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>검색 히스토리</title>
+    <title>위치 히스토리</title>
     <style>
         #histories {
             font-family: Arial, Helvetica, sans-serif;
@@ -29,7 +29,7 @@
     </style>
 </head>
 <body>
-<h1>검색 히스토리</h1>
+<h1>위치 히스토리</h1>
 <table id="histories">
     <thead>
     <tr>
@@ -41,18 +41,18 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${#lists.isEmpty(histories)}">
+    <tr th:if="${#lists.isEmpty(recentHistory)}">
         <td th:colspan="17" style="text-align:center; height:120px;">
             위치 정보를 입력한 후에 조회해 주세요.
         </td>
     </tr>
-    <tr th:each="history : ${histories}">
+    <tr th:each="history : ${recentHistory}">
         <td th:text="${history.id}"></td>
         <td th:text="${history.lat}"></td>
         <td th:text="${history.lnt}"></td>
-        <td th:text="${#temporals.format(history.searchedAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td th:text="${#temporals.format(history.searchDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
         <td>
-            <form th:action="@{/history/delete/{id}(id=${history.id})}" method="post" style="display: inline;">
+            <form th:action="@{/search/history/delete/{id}(id=${history.id})}" method="post" style="display: inline;">
                 <button type="submit">삭제</button>
             </form>
         </td>

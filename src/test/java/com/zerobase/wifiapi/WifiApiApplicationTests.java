@@ -2,7 +2,7 @@ package com.zerobase.wifiapi;
 
 import com.zerobase.wifiapi.dto.WifiApiResponse;
 import com.zerobase.wifiapi.entity.Wifi;
-import com.zerobase.wifiapi.entity.WifiMapper;
+import com.zerobase.wifiapi.dto.WifiMapper;
 import com.zerobase.wifiapi.repository.WifiRepository;
 import com.zerobase.wifiapi.service.WifiApiClient;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class WifiApiApplicationTests {
 
     @Test
     void testfetchWifiRecords() {
-        List<WifiApiResponse.WifiRecord> records = wifiApiClient.fetchWifiRecords();
+        List<WifiApiResponse.WifiRecord> records = wifiApiClient.fetchWifiRecords(1, 1000);
 
         assertFalse(records.isEmpty(), "API에서 데이터를 불러오지 못했습니다.");
         records.forEach(System.out::println);
@@ -32,7 +32,7 @@ class WifiApiApplicationTests {
 
     @Test
     void testSaveOneWifiRecord() {
-        WifiApiResponse.WifiRecord record = wifiApiClient.fetchWifiRecords().getFirst();
+        WifiApiResponse.WifiRecord record = wifiApiClient.fetchWifiRecords(1, 1000).getFirst();
         Wifi wifi = WifiMapper.toEntity(record);
         Wifi saved = wifiRepository.save(wifi);
 

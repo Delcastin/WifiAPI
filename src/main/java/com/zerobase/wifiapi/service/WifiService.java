@@ -19,4 +19,7 @@ public interface WifiService {
 
     // 저장된 데이터를 조회
     List<Wifi> getAllWifi();
+
+    // Detail을 표기하기 위해 Wifi관리번호로 찾는다!
+    Wifi findByMgrNo(String mgrNo, Double currentLat, Double currentLnt);
 }

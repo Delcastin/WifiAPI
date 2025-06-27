@@ -6,9 +6,8 @@ import java.util.List;
 
 public interface SearchHistoryService {
 
-    void saveSearchHistory(double lat, double lnt);
+    SearchHistory saveSearchHistory(SearchHistory searchHistory);
 
-    List<SearchHistory> getAllHistory();
+    List<SearchHistory> getRecentSearchHistories();
 
-    void deleteById(Long id);
 }

@@ -1,11 +1,11 @@
 package com.zerobase.wifiapi.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -36,6 +36,11 @@ public class Wifi {
     private double lnt; // 경도
     private String worked_at; // 작업일자
 
+    @Transient
+    private Double distance; // 거리 (다만, 바로 Database에 들어가지는 않는다.)
+
+    @OneToMany(mappedBy = "wifi") // bookmark와 일대다의 관계
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
 
 }

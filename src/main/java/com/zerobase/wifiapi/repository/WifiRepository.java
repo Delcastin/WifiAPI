@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface WifiRepository extends JpaRepository<Wifi, Long> {
 
     Optional<Wifi> findByMgrNo(String mgrNo);
+
+    boolean existsByMgrNo(String mgrNo);
 }

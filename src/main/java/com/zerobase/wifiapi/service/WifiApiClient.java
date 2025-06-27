@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import static com.zerobase.wifiapi.entity.WifiMapper.toEntity;
+import static com.zerobase.wifiapi.dto.WifiMapper.toEntity;
 
 @Service
 public class WifiApiClient {
@@ -70,16 +70,24 @@ public class WifiApiClient {
         int totalCount = 0;
         int batchSize = 1000;
         int start = 1;
+        int maxLimit = 30000;
 
-        while (true) {
-            int end = start + batchSize - 1;
-            List<WifiApiResponse.WifiRecord> wifiRecords = fetchWifiRecords(start, end);
+        while (start <= maxLimit) {
+            int end = Math.min(start + batchSize - 1, maxLimit);
 
-            if (wifiRecords == null || wifiRecords.isEmpty()) {
+            List<WifiApiResponse.WifiRecord> records;
+            try {
+                records = fetchWifiRecords(start, end);
+            } catch (RuntimeException e) {
+                System.out.println("API 요청 실패: start=" + start + ", end=" + end);
                 break;
             }
 
-            for (WifiApiResponse.WifiRecord record : wifiRecords) {
+            if (records == null || records.isEmpty()) {
+                break; // 더 이상 데이터 없음
+            }
+
+            for (WifiApiResponse.WifiRecord record : records) {
                 if (saveWifiRecord(record)) {
                     totalCount++;
                 }
@@ -93,15 +101,24 @@ public class WifiApiClient {
 
     private boolean saveWifiRecord(WifiApiResponse.WifiRecord record) {
         try {
+            if (wifiRepository.existsByMgrNo(record.getMgrNo())) {
+                return false;
+            }
+
             Wifi wifi = toEntity(record);
+            System.out.println("저장 시도 중: " + wifi.getMgrNo());
+
             wifiRepository.save(wifi);
+            System.out.println("저장 성공: " + wifi.getMgrNo());
+
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("저장 실패: " + record.getMgrNo());
+            e.printStackTrace();  // 반드시 콘솔에서 확인
             return false;
         }
-
     }
+
 
     private Wifi intoEntity(WifiApiResponse.WifiRecord record) {
         try {
